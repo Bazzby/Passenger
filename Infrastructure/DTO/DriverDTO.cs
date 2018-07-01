@@ -6,6 +6,6 @@ namespace Infrastructure.DTO
 {
     public class DriverDTO
     {
-        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
     }
 }

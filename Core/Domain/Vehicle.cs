@@ -10,7 +10,10 @@ namespace Core.Domain
         public string Name { get; protected set; }
         public int Seats { get; protected set; }
 
-        public Vehicle(string brand, string name, int seats)
+        protected Vehicle()
+        {
+        }
+        protected Vehicle(string brand, string name, int seats)
         {
             SetBrand(brand);
             SetName(name);
@@ -62,5 +65,8 @@ namespace Core.Domain
 
             Seats = seats;
         }
+
+        private static Vehicle Create(string brand, string name, int seats)
+            => new Vehicle(brand, name, seats);
     }
 }

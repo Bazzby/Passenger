@@ -1,4 +1,5 @@
 ﻿using Core.Repositories;
+using Infrastructure.Mappers;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
@@ -22,6 +23,7 @@ namespace Api
         {
             services.AddScoped<IUserRepository, InMemoryUserRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddSingleton(AutoMapperConfig.Initialize());
             services.AddMvc();
         }
 
