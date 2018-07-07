@@ -1,16 +1,16 @@
-﻿using Infrastructure.Commands.Users;
+﻿using Infrastructure.Commands;
+using Infrastructure.Commands.Users;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace Api.Controllers
 {
-    [Route("[controller]")]
-    public class UsersController : Controller
+    public class UsersController : ApiControllerBase
     {
         private readonly IUserService _userService;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, ICommandDispatcher commandDispatcher) : base(commandDispatcher)
         {
             _userService = userService;
         }
@@ -19,7 +19,7 @@ namespace Api.Controllers
         public async Task<IActionResult> Get(string email)
         {
             var user = await _userService.GetAsync(email);
-            if(user == null)
+            if (user == null)
             {
                 return NotFound();
             }
@@ -28,11 +28,11 @@ namespace Api.Controllers
         }
 
         [HttpPost("")]
-        public async Task<IActionResult> Post([FromBody]CreateUser request)
+        public async Task<IActionResult> Post([FromBody]CreateUser command)
         {
-            await _userService.RegisterAsync(request.Email, request.Username, request.Password);
+            await CommandDispatcher.DispatchAsync(command);
 
-            return Created($"users/{request.Email}", new object());
+            return Created($"users/{command.Email}", new object());
         }
     }
 }
