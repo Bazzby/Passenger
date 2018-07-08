@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Core.Repositories
 {
-    public interface IUserRepository
+    public interface IUserRepository : IRepository
     {
         Task<User> GetAsync(Guid Id);
         Task<User> GetAsync(string email);

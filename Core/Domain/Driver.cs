@@ -9,6 +9,7 @@ namespace Core.Domain
         public Vehicle Vehicle { get; protected set; }
         public IEnumerable<Route> Routes { get; protected set; }
         public IEnumerable<DailyRoute> DailyRoutes { get; protected set; }
+        public DateTime UpdateAt { get; protected set; }
 
         protected Driver()
         {

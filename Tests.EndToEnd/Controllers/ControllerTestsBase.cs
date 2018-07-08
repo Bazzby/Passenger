@@ -1,9 +1,9 @@
 ﻿using Api;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Text;
 
@@ -16,8 +16,11 @@ namespace Tests.EndToEnd.Controllers
 
         public ControllerTestsBase()
         {
+            var integrationTestsPath = PlatformServices.Default.Application.ApplicationBasePath;
+            var applicationPath = Path.GetFullPath(Path.Combine(integrationTestsPath, "../../../../Api"));
             Server = new TestServer(new WebHostBuilder()
-                .UseStartup<Startup>());
+                .UseStartup<Startup>()
+                .UseContentRoot(applicationPath));
             Client = Server.CreateClient();
         }
 

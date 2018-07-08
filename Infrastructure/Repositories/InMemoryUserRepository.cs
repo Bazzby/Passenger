@@ -11,10 +11,10 @@ namespace Infrastructure.Repositories
     {
         private static ISet<User> _users = new HashSet<User>()
         {
-            new User("user1@gmail.com", "user1", "password", "salt"),
-            new User("user1@gmai2.com", "user2", "password", "salt"),
-            new User("user1@gmai3.com", "user3", "password", "salt"),
-            new User("user1@gmai4.com", "user4", "password", "salt")
+            new User("user1@gmail.com", "user1", "password", "user", "salt"),
+            new User("user1@gmai2.com", "user2", "password", "user", "salt"),
+            new User("user1@gmai3.com", "user3", "password", "user", "salt"),
+            new User("user1@gmai4.com", "user4", "password", "user", "salt")
         };
 
         public async Task<User> GetAsync(Guid id)

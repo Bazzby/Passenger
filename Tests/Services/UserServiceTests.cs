@@ -21,7 +21,7 @@ namespace Tests.Services
             var mapperMock = new Mock<IMapper>();
 
             var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
-            await userService.RegisterAsync("user@gmail.com", "user", "pass");
+            await userService.RegisterAsync("user@gmail.com", "user", "pass", "user");
 
             userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
         }
@@ -35,7 +35,7 @@ namespace Tests.Services
             var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
             await userService.GetAsync("user1@gmail.com");
 
-            var user = new User("user1@gmail.com", "user1", "secret", "salt");
+            var user = new User("user1@gmail.com", "user1", "secret", "user", "salt");
 
             userRepositoryMock.Setup(x => x.GetAsync(It.IsAny<string>()))
                 .ReturnsAsync(user);
