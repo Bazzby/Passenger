@@ -1,30 +1,44 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Infrastructure.Extensions;
 using Infrastructure.IoC;
+using Infrastructure.Settings;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Text;
 
 namespace Api
 {
     public class Startup
     {
-        public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; }
         public IContainer ApplicationContainer { get; private set; }
-        public Startup(IHostingEnvironment env)
+
+        public Startup(IConfiguration configuration)
         {
-            var config = new ConfigurationBuilder();
-            config
-                .SetBasePath(env.ContentRootPath)
-                .AddEnvironmentVariables()
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
-            Configuration = config.Build();
+            Configuration = configuration;
         }
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            var jwtSettings = Configuration.GetSettings<JwtSettings>();
+
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = jwtSettings.Issuer,
+                        ValidateAudience = false,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
+                    };
+                });
+            services.AddAuthorization(x => x.AddPolicy("admin", p => p.RequireRole("admin")));
 
             services.AddMvc();
 
@@ -43,6 +57,7 @@ namespace Api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseAuthentication();
 
             app.UseMvc();
             appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());

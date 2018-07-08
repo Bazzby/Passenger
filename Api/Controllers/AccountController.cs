@@ -1,18 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Infrastructure.Commands;
+﻿using Infrastructure.Commands;
 using Infrastructure.Commands.Users;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Api.Controllers
 {
     public class AccountController : ApiControllerBase
     {
-        public AccountController(ICommandDispatcher commandDispatcher) : base(commandDispatcher)
+        private readonly IJwtHandler _jwtHandler;
+
+        public AccountController(ICommandDispatcher commandDispatcher, IJwtHandler jwtHandler) : base(commandDispatcher)
         {
+            _jwtHandler = jwtHandler;
+        }
+
+        [HttpGet]
+        [Route("token")]
+        public IActionResult Get()
+        {
+            var token = _jwtHandler.CreateToken("user1@gmail.com", "admin");
+
+            return Json(token);
         }
 
         [HttpPut]

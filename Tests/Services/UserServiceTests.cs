@@ -18,9 +18,12 @@ namespace Tests.Services
         public async Task register_async_should_invoke_add_async_on_repository()
         {
             var userRepositoryMock = new Mock<IUserRepository>();
+            var encryptedMock = new Mock<IEncrypter>();
+            encryptedMock.Setup(x => x.GetSalt()).Returns("salt");
+            encryptedMock.Setup(x => x.GetHash(It.IsAny<string>(), It.IsAny<string>())).Returns("hash");
             var mapperMock = new Mock<IMapper>();
 
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
+            var userService = new UserService(userRepositoryMock.Object, encryptedMock.Object, mapperMock.Object);
             await userService.RegisterAsync("user@gmail.com", "user", "pass", "user");
 
             userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
@@ -30,9 +33,12 @@ namespace Tests.Services
         public async Task when_calling_get_async_and_user_exists_it_should_invoke_user_repository_get_async()
         {
             var userRepositoryMock = new Mock<IUserRepository>();
+            var encryptedMock = new Mock<IEncrypter>();
+            encryptedMock.Setup(x => x.GetSalt()).Returns("salt");
+            encryptedMock.Setup(x => x.GetHash(It.IsAny<string>(), It.IsAny<string>())).Returns("hash");
             var mapperMock = new Mock<IMapper>();
 
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
+            var userService = new UserService(userRepositoryMock.Object, encryptedMock.Object, mapperMock.Object);
             await userService.GetAsync("user1@gmail.com");
 
             var user = new User("user1@gmail.com", "user1", "secret", "user", "salt");
@@ -47,9 +53,10 @@ namespace Tests.Services
         public async Task when_calling_get_async_and_user_does_not_exists_it_should_invoke_user_repository_get_async()
         {
             var userRepositoryMock = new Mock<IUserRepository>();
+            var encryptedMock = new Mock<IEncrypter>();
             var mapperMock = new Mock<IMapper>();
 
-            var userService = new UserService(userRepositoryMock.Object, mapperMock.Object);
+            var userService = new UserService(userRepositoryMock.Object, encryptedMock.Object, mapperMock.Object);
             await userService.GetAsync("user@gmail.com");
 
             userRepositoryMock.Setup(x => x.GetAsync("user@gmail.com"))

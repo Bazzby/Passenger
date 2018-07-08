@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Commands;
 using Infrastructure.Commands.Users;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -15,6 +16,7 @@ namespace Api.Controllers
             _userService = userService;
         }
 
+        [Authorize(Policy = "admin")]
         [HttpGet("{email}")]
         public async Task<IActionResult> Get(string email)
         {
