@@ -3,6 +3,7 @@ using Core.Domain;
 using Core.Repositories;
 using Infrastructure.DTO;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Services
@@ -17,6 +18,13 @@ namespace Infrastructure.Services
             _userRepository = userRepository;
             _encrypter = encrypter;
             _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<UserDTO>> BrowseAsync()
+        {
+            var users = await _userRepository.BrowseAsync();
+
+            return _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(users);
         }
 
         public async Task<UserDTO> GetAsync(string email)
@@ -34,8 +42,7 @@ namespace Infrastructure.Services
                 throw new Exception("Invalid credentials");
             }
 
-            var salt = _encrypter.GetSalt();
-            var hash = _encrypter.GetHash(password, salt);
+            var hash = _encrypter.GetHash(password, user.Salt);
             if (user.Password == hash)
             {
                 return;
@@ -43,7 +50,7 @@ namespace Infrastructure.Services
             throw new Exception("Invalid credentials");
         }
 
-        public async Task RegisterAsync(string email, string username, string password, string role)
+        public async Task RegisterAsync(Guid userId, string email, string username, string password, string role)
         {
             var user = await _userRepository.GetAsync(email);
             if (user != null)
@@ -53,7 +60,7 @@ namespace Infrastructure.Services
 
             var salt = _encrypter.GetSalt();
             var hash = _encrypter.GetHash(password, salt);
-            user = new User(email, username, hash, role, salt);
+            user = new User(userId, email, username, hash, role, salt);
             await _userRepository.AddAsync(user);
         }
     }

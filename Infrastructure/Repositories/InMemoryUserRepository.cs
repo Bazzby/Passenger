@@ -9,13 +9,7 @@ namespace Infrastructure.Repositories
 {
     public class InMemoryUserRepository : IUserRepository
     {
-        private static ISet<User> _users = new HashSet<User>()
-        {
-            new User("user1@gmail.com", "user1", "password", "user", "salt"),
-            new User("user1@gmai2.com", "user2", "password", "user", "salt"),
-            new User("user1@gmai3.com", "user3", "password", "user", "salt"),
-            new User("user1@gmai4.com", "user4", "password", "user", "salt")
-        };
+        private static ISet<User> _users = new HashSet<User>();
 
         public async Task<User> GetAsync(Guid id)
              => await Task.FromResult(_users.SingleOrDefault(x => x.Id == id));
@@ -23,7 +17,7 @@ namespace Infrastructure.Repositories
         public async Task<User> GetAsync(string email)
             => await Task.FromResult(_users.SingleOrDefault(x => x.Email == email.ToLowerInvariant()));
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<IEnumerable<User>> BrowseAsync()
             => await Task.FromResult(_users);
 
         public async Task AddAsync(User user)

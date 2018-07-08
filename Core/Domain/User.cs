@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Core.Domain
@@ -23,9 +21,9 @@ namespace Core.Domain
         {
         }
 
-        public User(string email, string username, string password, string role, string salt)
+        public User(Guid userId, string email, string username, string password, string role, string salt)
         {
-            Id = Guid.NewGuid();
+            Id = userId;
             Email = email.ToLowerInvariant();
             Username = username;
             Password = password;
@@ -39,7 +37,7 @@ namespace Core.Domain
 
         public void SetUserName(string username)
         {
-            if(!NameRegex.IsMatch(username))
+            if (!NameRegex.IsMatch(username))
             {
                 throw new Exception("Username is invalid.");
             }
@@ -59,7 +57,7 @@ namespace Core.Domain
             {
                 throw new Exception("Email can not be empty.");
             }
-            if(Email == email)
+            if (Email == email)
             {
                 return;
             }
@@ -70,7 +68,7 @@ namespace Core.Domain
 
         public void SetRole(string role)
         {
-            if(Role == role)
+            if (Role == role)
             {
                 return;
             }
@@ -85,15 +83,15 @@ namespace Core.Domain
             {
                 throw new Exception("Password can not be empty.");
             }
-            if(password.Length < 4)
+            if (password.Length < 4)
             {
                 throw new Exception("Password must containt at least 4 characters.");
             }
-            if(password.Length > 100)
+            if (password.Length > 100)
             {
                 throw new Exception("Password can not contain more than 100 characters.");
             }
-            if(Password == password)
+            if (Password == password)
             {
                 return;
             }

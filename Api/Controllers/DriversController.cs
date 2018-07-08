@@ -4,14 +4,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using Infrastructure.Commands;
 using Infrastructure.Commands.Drivers;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
     public class DriversController : ApiControllerBase
     {
-        public DriversController(ICommandDispatcher commandDispatcher) : base(commandDispatcher)
+        private readonly IDriverService _driverService;
+        public DriversController(IDriverService driverService, ICommandDispatcher commandDispatcher) : base(commandDispatcher)
         {
+            _driverService = driverService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var drivers = await _driverService.BrowseAsync();
+            return Json(drivers);
         }
 
         [HttpPost]

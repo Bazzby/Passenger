@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Core.Domain
 {
@@ -26,7 +24,7 @@ namespace Core.Domain
             {
                 throw new Exception("Please provide valid data.");
             }
-            if(Brand == brand)
+            if (Brand == brand)
             {
                 return;
             }
@@ -36,7 +34,7 @@ namespace Core.Domain
 
         private void SetName(string name)
         {
-            if(string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 throw new Exception("Please provide valid data.");
             }
@@ -50,15 +48,15 @@ namespace Core.Domain
 
         private void SetSeats(int seats)
         {
-            if(seats <= 0)
+            if (seats <= 0)
             {
                 throw new Exception("Seats must be greater than 0.");
             }
-            if(seats > 9)
+            if (seats > 9)
             {
                 throw new Exception("You can not provide more than 9 seats.");
             }
-            if(Seats == seats)
+            if (Seats == seats)
             {
                 return;
             }
@@ -66,7 +64,7 @@ namespace Core.Domain
             Seats = seats;
         }
 
-        private static Vehicle Create(string brand, string name, int seats)
+        public static Vehicle Create(string brand, string name, int seats)
             => new Vehicle(brand, name, seats);
     }
 }

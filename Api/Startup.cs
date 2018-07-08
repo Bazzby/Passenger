@@ -2,6 +2,7 @@
 using Autofac.Extensions.DependencyInjection;
 using Infrastructure.Extensions;
 using Infrastructure.IoC;
+using Infrastructure.Services;
 using Infrastructure.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -27,7 +28,6 @@ namespace Api
         {
             var jwtSettings = Configuration.GetSettings<JwtSettings>();
 
-
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -38,8 +38,9 @@ namespace Api
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
                     };
                 });
-            services.AddAuthorization(x => x.AddPolicy("admin", p => p.RequireRole("admin")));
 
+            services.AddAuthorization(x => x.AddPolicy("admin", p => p.RequireRole("admin")));
+            services.AddMemoryCache();
             services.AddMvc();
 
             var builder = new ContainerBuilder();
@@ -59,6 +60,12 @@ namespace Api
 
             app.UseAuthentication();
 
+            var generalSettings = app.ApplicationServices.GetService<GeneralSettings>();
+            if (generalSettings.SeedData)
+            {
+                var dataInitializer = app.ApplicationServices.GetService<IDataInitializer>();
+                dataInitializer.SeedAsync();
+            }
             app.UseMvc();
             appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
         }

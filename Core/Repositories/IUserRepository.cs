@@ -9,7 +9,7 @@ namespace Core.Repositories
     {
         Task<User> GetAsync(Guid Id);
         Task<User> GetAsync(string email);
-        Task<IEnumerable<User>> GetAllAsync();
+        Task<IEnumerable<User>> BrowseAsync();
         Task AddAsync(User user);
         Task UpdateAsync(User user);
         Task RemoveAsync(Guid Id);

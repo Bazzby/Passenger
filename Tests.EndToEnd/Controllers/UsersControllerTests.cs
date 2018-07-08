@@ -18,14 +18,6 @@ namespace Tests.EndToEnd.Controllers
     public class UsersControllerTests : ControllerTestsBase
     {
         [Fact]
-        public async Task given_valid_email_user_should_exist()
-        {
-            var email = "user1@gmail.com";
-            var user = await GetUserAsync(email);
-            user.Email.Should().BeEquivalentTo(email);
-        }
-
-        [Fact]
         public async Task given_invalid_email_user_should_not_exist()
         {
             var email = "user1000@gmail.com";

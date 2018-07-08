@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Core.Domain;
 using Core.Repositories;
-using FluentAssertions;
 using Infrastructure.Services;
 using Moq;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Tests.Services
@@ -24,7 +21,7 @@ namespace Tests.Services
             var mapperMock = new Mock<IMapper>();
 
             var userService = new UserService(userRepositoryMock.Object, encryptedMock.Object, mapperMock.Object);
-            await userService.RegisterAsync("user@gmail.com", "user", "pass", "user");
+            await userService.RegisterAsync(Guid.NewGuid(), "user@gmail.com", "user", "pass", "user");
 
             userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
         }
@@ -41,7 +38,7 @@ namespace Tests.Services
             var userService = new UserService(userRepositoryMock.Object, encryptedMock.Object, mapperMock.Object);
             await userService.GetAsync("user1@gmail.com");
 
-            var user = new User("user1@gmail.com", "user1", "secret", "user", "salt");
+            var user = new User(Guid.NewGuid(), "user1@gmail.com", "user1", "secret", "user", "salt");
 
             userRepositoryMock.Setup(x => x.GetAsync(It.IsAny<string>()))
                 .ReturnsAsync(user);

@@ -16,7 +16,6 @@ namespace Api.Controllers
             _userService = userService;
         }
 
-        [Authorize(Policy = "admin")]
         [HttpGet("{email}")]
         public async Task<IActionResult> Get(string email)
         {
@@ -27,6 +26,13 @@ namespace Api.Controllers
             }
 
             return Json(user);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var users = await _userService.BrowseAsync();
+            return Json(users);
         }
 
         [HttpPost("")]

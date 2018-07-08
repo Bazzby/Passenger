@@ -1,4 +1,5 @@
 ﻿using Api;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.PlatformAbstractions;
@@ -16,11 +17,9 @@ namespace Tests.EndToEnd.Controllers
 
         public ControllerTestsBase()
         {
-            var integrationTestsPath = PlatformServices.Default.Application.ApplicationBasePath;
-            var applicationPath = Path.GetFullPath(Path.Combine(integrationTestsPath, "../../../../Api"));
-            Server = new TestServer(new WebHostBuilder()
-                .UseStartup<Startup>()
-                .UseContentRoot(applicationPath));
+            Server = new TestServer(WebHost
+                .CreateDefaultBuilder()
+                .UseStartup<Startup>());
             Client = Server.CreateClient();
         }
 
